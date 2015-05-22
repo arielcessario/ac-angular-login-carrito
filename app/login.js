@@ -192,7 +192,13 @@
                 });
         }
         function checkLogged() {
+            var globals = $cookieStore.get('app.userlogged');
 
+            if(globals!== undefined && globals.userid !== undefined){
+                return true;
+            }else{
+                return false;
+            }
         }
     }
 

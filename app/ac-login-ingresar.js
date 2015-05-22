@@ -53,6 +53,10 @@
                     });
                 }
 
+                function checkLogged(){
+
+                }
+
                 function recuperar(){
 
                 }
