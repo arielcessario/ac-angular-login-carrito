@@ -8,7 +8,7 @@
     var scripts = document.getElementsByTagName("script");
     var currentScriptPath = scripts[scripts.length-1].src;
 
-    angular.module('login.login', ['ngRoute', 'ngCookies', 'toastr'])
+    angular.module('login.login', ['ngRoute', 'ngCookies'])
     //angular.module('login.login', ['ngRoute', 'ngCookies'])
         .config(['$routeProvider', function ($routeProvider) {
             $routeProvider.when('/login/:action', {
@@ -24,14 +24,14 @@
         .factory('LoginService', LoginService);
 
     //Injects
-    LoginCtrl.$inject = ['LoginService', '$cookieStore', '$window', '$routeParams', 'toastr', '$location'];
+    LoginCtrl.$inject = ['LoginService', '$cookieStore', '$window', '$routeParams', '$location'];
     //LoginCtrl.$inject = ['LoginService', '$cookieStore', '$window', '$routeParams'];
     LoginService.$inject = ['$http', '$cookieStore', '$window'];
 
 
     //Implementations
     //function LoginCtrl(LoginService, $cookieStore, $window, $routeParams) {
-    function LoginCtrl(LoginService, $cookieStore, $window, $routeParams, toastr, $location) {
+    function LoginCtrl(LoginService, $cookieStore, $window, $routeParams, $location) {
         // Functions
         var vm = this;
 
@@ -63,20 +63,20 @@
                                 LoginService.setLogged(user.user_name, user.usuario_id, user.rol_id, user.token);
                             }                                
                             else {
-                                toastr.warning('Por favor cambie la contraseña temporal');
+                                //toastr.warning('Por favor cambie la contraseña temporal');
                             }                        	
                         }
                         else {
-                            toastr.error('Usuario o contraseña invalido');
+                            //toastr.error('Usuario o contraseña invalido');
                         }
                     });
                 }
                 else {
-                    toastr.warning('La Password deben tener un mínimo de 6 caracteres y un maximo de 25');
+                    //toastr.warning('La Password deben tener un mínimo de 6 caracteres y un maximo de 25');
                 }
             }
             else {
-                toastr.error('Por favor ingrese un usuario y Password');
+                //toastr.error('Por favor ingrese un usuario y Password');
             }
         }
 
