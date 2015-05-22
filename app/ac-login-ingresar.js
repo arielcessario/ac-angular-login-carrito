@@ -5,13 +5,13 @@
     var currentScriptPath = scripts[scripts.length-1].src;
     //console.log(currentScriptPath);
 
-    angular.module('acLoginCarritoIngresar', ['ngRoute', 'login.login', 'toastr'])
+    angular.module('acLoginCarritoIngresar', ['ngRoute', 'login.login'])
         .directive('acLoginCarritoIngresar', AcLoginCarritoIngresar);
 
 
-    AcLoginCarritoIngresar.$inject = ['$location', '$route', 'LoginService', 'toastr'];
+    AcLoginCarritoIngresar.$inject = ['$location', '$route', 'LoginService'];
 
-    function AcLoginCarritoIngresar($location, $route, LoginService, toastr) {
+    function AcLoginCarritoIngresar($location, $route, LoginService) {
         return {
             restrict: 'E',
             scope: {
@@ -43,7 +43,7 @@
                 function crear(){
 
                     if(vm.password !== vm.password_repeat){
-                        toastr.error('Los password no coinciden.')
+                        //toastr.error('Los password no coinciden.')
                     }
                     LoginService.create(vm.nombre, vm.apellido, vm.mail, vm.password, function(data){
 

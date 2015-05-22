@@ -127,10 +127,17 @@
         service.checkLastLogin = checkLastLogin;
         service.setLogged = setLogged;
         service.create = create;
+        service.logout = logout;
 
         return service;
 
          //Functions
+        function logout(){
+            $cookieStore.remove('app.userlogged');
+        }
+
+
+
         function login(mail, password, callback) {
             return $http.post(url,
                 {'function': 'login', 'mail': mail, 'password': password})
