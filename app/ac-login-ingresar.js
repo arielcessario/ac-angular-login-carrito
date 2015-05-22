@@ -15,7 +15,7 @@
         return {
             restrict: 'E',
             scope: {
-                parametro: '='
+                tipo: '='
             },
             templateUrl: currentScriptPath.replace('.js', '.html'),
             controller: function ($scope, $compile, $http) {
@@ -26,7 +26,7 @@
                 vm.mail = '';
                 vm.password_repeat = '';
                 vm.password = '';
-                vm.control = 'form';
+                vm.control = $scope.tipo;
 
                 vm.ingresar = ingresar;
                 vm.crear = crear;
