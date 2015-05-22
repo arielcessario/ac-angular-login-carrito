@@ -14,7 +14,7 @@ $data = file_get_contents("php://input");
 $decoded = json_decode($data);
 
 if ($decoded->function == 'login') {
-    login($decoded->username, $decoded->password);
+    login($decoded->mail, $decoded->password);
 } else if ($decoded->function == 'checkLastLogin') {
     checkLastLogin($decoded->userid);
 } else if ($decoded->function == 'create') {
@@ -29,10 +29,10 @@ if ($decoded->function == 'login') {
     existeCliente($decoded->username);
 }
 
-function login($username, $password)
+function login($mail, $password)
 {
     $db = new MysqliDb();
-    $db->where("user_name", $username);
+    $db->where("mail", $mail);
 
     $results = $db->get("clientes");
 
@@ -40,25 +40,29 @@ function login($username, $password)
 
     if (password_verify($password, $hash)) {        
         $userId = $results[0]['cliente_id'];
-        $token = password_hash(rand(), PASSWORD_BCRYPT);
-        $token = str_replace('/','',$token);
-        $data = array('last_login' => $db->now(),
-            'token' => $token);
-        $db->where('cliente_id', $userId);
+        echo json_encode($userId);
 
-        $results[0]['token'] = $token;
-
-        if ($db->update('clientes', $data)) {
-            $response = ['response' => true, 'user' => json_encode($results[0]), 'pwd' => $password, 'hash' => $hash, 'pwd_info' => password_get_info($hash)];
-        } else {
-            $response = ['response' => false, 'pwd' => $password, 'hash' => $hash, 'pwd_info' => password_get_info($hash)];
-        }
-        
-        echo json_encode($response);
+//        $token = password_hash(rand(), PASSWORD_BCRYPT);
+//        $token = str_replace('/','',$token);
+//        $data = array('last_login' => $db->now(),
+//            'token' => $token);
+//        $db->where('cliente_id', $userId);
+//
+//        $results[0]['token'] = $token;
+//
+//        if ($db->update('clientes', $data)) {
+//            $response = ['response' => true, 'user' => json_encode($results[0]), 'pwd' => $password, 'hash' => $hash, 'pwd_info' => password_get_info($hash)];
+//        } else {
+//            $response = ['response' => false, 'pwd' => $password, 'hash' => $hash, 'pwd_info' => password_get_info($hash)];
+//        }
+//
+//        echo json_encode($response);
     } 
     else {
-        $response = ['response' => false, 'pwd' => $password, 'hash' => $hash, 'pwd_info' => password_get_info($hash)];
-        echo json_encode($response);
+
+        echo json_encode(-1);
+//        $response = ['response' => false, 'pwd' => $password, 'hash' => $hash, 'pwd_info' => password_get_info($hash)];
+//        echo json_encode($response);
     }
 }
 
@@ -94,7 +98,7 @@ function create($user)
     $data = array(
         'nombre' => $user_decoded->nombre,
         'apellido' => $user_decoded->apellido,
-        'user_name' => $user_decoded->username,
+        'mail' => $user_decoded->mail,
         'password' => $password);
 
     $result = $db->insert('clientes', $data);

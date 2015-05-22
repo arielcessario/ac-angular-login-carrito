@@ -5,6 +5,9 @@
     //var destinationWebsite = "http://192.185.67.199/~arielces/playground/redirect/#/verify-login/";
     var destinationWebsite = "http://192.185.67.199/~arielces/admin-hostel/site/#/verify-login/";
 
+    var scripts = document.getElementsByTagName("script");
+    var currentScriptPath = scripts[scripts.length-1].src;
+
     angular.module('login.login', ['ngRoute', 'ngCookies', 'toastr'])
     //angular.module('login.login', ['ngRoute', 'ngCookies'])
         .config(['$routeProvider', function ($routeProvider) {
@@ -116,22 +119,24 @@
         //Variables
         var service = {};
 
+        var url= currentScriptPath.replace('login.js','cliente.php');
+
         //Function declarations
         service.login = login;
         service.checkLogged = checkLogged;
         service.checkLastLogin = checkLastLogin;
         service.setLogged = setLogged;
+        service.create = create;
 
         return service;
 
          //Functions
-        function login(username, password, callback) {
-            return $http.post('./login-api/user.php',
-                {'function': 'login', 'username': username, 'password': password})
+        function login(mail, password, callback) {
+            return $http.post(url,
+                {'function': 'login', 'mail': mail, 'password': password})
                 .success(function (data) {
-                    if (data.response) {                        
-                        var user = JSON.parse(data.user);
-                        //setLogged(user.user_name, user.usuario_id, user.rol_id, user.token);
+                    if (data > -1) {
+                        setLogged(data);
                     }                    
                     //console.log(data);
                     callback(data);
@@ -140,7 +145,7 @@
         }
 
         function checkLastLogin(userid, callback) {
-            return $http.post('./login-api/user.php',
+            return $http.post('user.php',
                 {function: 'checkLastLogin', 'userid': userid})
                 .success(function (data) {
                     //console.log(data);
@@ -152,18 +157,33 @@
                 .error()
         }
 
-        function setLogged(username, userid, rol, verification) {
+        function setLogged(userid) {
             var datos = {
-                'username': username || '',
-                'userid': userid || '',
-                'rol': rol || '',
-                'verification': verification || ''
-            }
-            $cookieStore.put('appname.login.userLogged', datos);
-            //console.log(verification);
-            $window.location.href = destinationWebsite + verification + '/' + userid;
+                'userid': userid || ''
+            };
+            $cookieStore.put('app.userlogged', datos);
         }
 
+
+        function create(nombre, apellido, mail, password, callback){
+            var user = {
+                'nombre': nombre,
+                'apellido': apellido,
+                'mail': mail,
+                'password': password
+            };
+            return $http.post(url,
+                {
+                    'function': 'create',
+                    'user': JSON.stringify(user)
+                })
+                .success(function(data){
+                    callback(data);
+                })
+                .error(function(data){
+                    console.log(data);
+                });
+        }
         function checkLogged() {
 
         }

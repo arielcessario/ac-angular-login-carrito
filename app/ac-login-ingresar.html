@@ -1,10 +1,33 @@
-<!DOCTYPE html>
-<html>
-<head lang="en">
-    <meta charset="UTF-8">
-    <title></title>
-</head>
-<body>
+<div ng-if="acLoginCarritoIngresarCtrl.control === 'snippet'" id="ac-login-carrito-main-snippet">
+    <input type="text" class="ac-login-carrito-username" ng-model="acLoginCarritoIngresarCtrl.mail"/>
+    <input type="text" class="ac-login-carrito-password" ng-model="acLoginCarritoIngresarCtrl.password"/>
 
-</body>
-</html>
+    <div class="ac-login-carrito-btn-group">
+        <button ng-click="acLoginCarritoIngresarCtrl.ingresar()">Ingresar</button>
+        <button ng-click="acLoginCarritoIngresarCtrl.recuperar()">Recuperar Password</button>
+        <button ng-click="acLoginCarritoIngresarCtrl.crear()">Nuevo Usuario</button>
+    </div>
+</div>
+
+<div ng-if="acLoginCarritoIngresarCtrl.control === 'form'" id="ac-login-carrito-main">
+    <input type="text" class="ac-login-carrito-username" ng-model="acLoginCarritoIngresarCtrl.mail"/>
+    <input type="text" class="ac-login-carrito-password" ng-model="acLoginCarritoIngresarCtrl.password"/>
+
+    <div class="ac-login-carrito-btn-group">
+        <button ng-click="acLoginCarritoIngresarCtrl.ingresar()">Ingresar</button>
+        <button ng-click="acLoginCarritoIngresarCtrl.recuperar()">Recuperar Password</button>
+        <button ng-click="acLoginCarritoIngresarCtrl.crear()">Nuevo Usuario</button>
+    </div>
+</div>
+
+<div ng-if="acLoginCarritoIngresarCtrl.control === 'crear'" id="ac-login-carrito-main-crear">
+    <input type="text" class="ac-login-carrito-nombre" ng-model="acLoginCarritoIngresarCtrl.nombre"/>
+    <input type="text" class="ac-login-carrito-apellido" ng-model="acLoginCarritoIngresarCtrl.apellido"/>
+    <input type="text" class="ac-login-carrito-mail" ng-model="acLoginCarritoIngresarCtrl.mail"/>
+    <input type="text" class="ac-login-carrito-password" ng-model="acLoginCarritoIngresarCtrl.password"/>
+    <input type="text" class="ac-login-carrito-password" ng-model="acLoginCarritoIngresarCtrl.password_repeat"/>
+
+    <div class="ac-login-carrito-btn-group">
+        <button ng-click="acLoginCarritoIngresarCtrl.crear()">Crear</button>
+    </div>
+</div>
