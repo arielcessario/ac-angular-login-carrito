@@ -142,7 +142,7 @@
             return $http.post(url,
                 {'function': 'login', 'mail': mail, 'password': password})
                 .success(function (data) {
-                    if (data !== '-1') {
+                    if (data[0]!== undefined) {
                         setLogged(data);
                     }                    
                     //console.log(data);
