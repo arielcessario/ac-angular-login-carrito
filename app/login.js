@@ -143,7 +143,7 @@
                 {'function': 'login', 'mail': mail, 'password': password})
                 .success(function (data) {
                     if (data !== '-1') {
-                        setLogged(data[0].cliente_id, data[0].nombre);
+                        setLogged(data);
                     }                    
                     //console.log(data);
                     callback(data);
@@ -164,10 +164,9 @@
                 .error()
         }
 
-        function setLogged(userid, nombre) {
+        function setLogged(cliente) {
             var datos = {
-                'userid': userid || '',
-                'nombre': nombre || ''
+                'cliente': cliente
             };
             $cookieStore.put('app.userlogged', datos);
         }
@@ -195,7 +194,7 @@
         function checkLogged() {
             var globals = $cookieStore.get('app.userlogged');
 
-            if(globals!== undefined && globals.userid !== undefined){
+            if(globals!== undefined && globals.cliente !== undefined){
                 return globals;
             }else{
                 return false;
