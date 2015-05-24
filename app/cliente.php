@@ -36,34 +36,21 @@ function login($mail, $password)
 
     $results = $db->get("clientes");
 
-    $hash = $results[0]['password'];
+    if($db->count > 0){
 
-    if (password_verify($password, $hash)) {        
-//        $userId = $results[0]['cliente_id'];
-        echo json_encode($results);
+        $hash = $results[0]['password'];
+        if (password_verify($password, $hash)) {
+            echo json_encode($results);
+        }
+        else {
 
-//        $token = password_hash(rand(), PASSWORD_BCRYPT);
-//        $token = str_replace('/','',$token);
-//        $data = array('last_login' => $db->now(),
-//            'token' => $token);
-//        $db->where('cliente_id', $userId);
-//
-//        $results[0]['token'] = $token;
-//
-//        if ($db->update('clientes', $data)) {
-//            $response = ['response' => true, 'user' => json_encode($results[0]), 'pwd' => $password, 'hash' => $hash, 'pwd_info' => password_get_info($hash)];
-//        } else {
-//            $response = ['response' => false, 'pwd' => $password, 'hash' => $hash, 'pwd_info' => password_get_info($hash)];
-//        }
-//
-//        echo json_encode($response);
-    } 
-    else {
-
+            echo json_encode(-1);
+        }
+    }else{
         echo json_encode(-1);
-//        $response = ['response' => false, 'pwd' => $password, 'hash' => $hash, 'pwd_info' => password_get_info($hash)];
-//        echo json_encode($response);
     }
+
+
 }
 
 function checkLastLogin($userid)
