@@ -28,7 +28,7 @@
                 vm.password = '';
                 vm.control = $scope.tipo;
 
-                console.log($scope);
+                //console.log($scope);
 
                 vm.ingresar = ingresar;
                 vm.crear = crear;
