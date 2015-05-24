@@ -164,7 +164,7 @@
                 .error()
         }
 
-        function setLogged(userid) {
+        function setLogged(userid, nombre) {
             var datos = {
                 'userid': userid || '',
                 'nombre': nombre || ''
