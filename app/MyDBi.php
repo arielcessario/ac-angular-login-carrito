@@ -120,6 +120,8 @@ class MysqliDb {
 //    public function __construct($host = '192.168.126.1', $username = 'desa', $password = 'desa', $db = 'hostelv2', $port = NULL) {
     public function __construct($host = 'localhost', $username = 'root', $password = 'concentrador', $db = 'Bayres', $port = NULL) {
 //    public function __construct($host = '192.185.67.199', $username = 'arielces_login', $password = 'testlogin01', $db = 'arielces_login', $port = NULL) {
+//    public function __construct($host = '192.185.67.199', $username = 'arielces_login', $password = 'testlogin01', $db = 'arielces_login', $port = NULL) {
+// Bayres        public function __construct($host ='192.185.4.175', $username = 'arielces_bayres', $password = 't)htl)lPH{83', $db = 'arielces_bayres', $port = NULL) {
 //    public function __construct($host = '192.185.67.199', $username = 'arielces_hostelv', $password = 'KqEgpphCTgae', $db = 'arielces_hostelv4', $port = NULL) {
         $this->host = $host;
         $this->username = $username;
