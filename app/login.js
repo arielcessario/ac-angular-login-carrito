@@ -195,7 +195,7 @@
             var globals = $cookieStore.get('app.userlogged');
 
             if(globals!== undefined && globals.userid !== undefined){
-                return true;
+                return globals;
             }else{
                 return false;
             }
