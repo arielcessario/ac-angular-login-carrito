@@ -143,7 +143,7 @@
                 {'function': 'login', 'mail': mail, 'password': password})
                 .success(function (data) {
                     if (data > -1) {
-                        setLogged(data);
+                        setLogged(data[0].cliente_id, data[0].nombre);
                     }                    
                     //console.log(data);
                     callback(data);
@@ -166,7 +166,8 @@
 
         function setLogged(userid) {
             var datos = {
-                'userid': userid || ''
+                'userid': userid || '',
+                'nombre': nombre || ''
             };
             $cookieStore.put('app.userlogged', datos);
         }

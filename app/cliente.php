@@ -39,8 +39,8 @@ function login($mail, $password)
     $hash = $results[0]['password'];
 
     if (password_verify($password, $hash)) {        
-        $userId = $results[0]['cliente_id'];
-        echo json_encode($userId);
+//        $userId = $results[0]['cliente_id'];
+        echo json_encode($results);
 
 //        $token = password_hash(rand(), PASSWORD_BCRYPT);
 //        $token = str_replace('/','',$token);
