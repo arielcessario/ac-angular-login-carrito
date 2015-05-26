@@ -23,7 +23,10 @@
                 var vm = this;
                 vm.nombre = '';
                 vm.apellido = '';
+                vm.fecha_nacimiento = '';
                 vm.mail = '';
+                vm.telefono = '';
+                vm.direccion = '';
                 vm.password_repeat = '';
                 vm.password = '';
                 vm.control = $scope.tipo;
