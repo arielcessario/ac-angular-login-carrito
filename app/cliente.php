@@ -86,7 +86,11 @@ function create($user)
         'nombre' => $user_decoded->nombre,
         'apellido' => $user_decoded->apellido,
         'mail' => $user_decoded->mail,
-        'password' => $password);
+        'password' => $password,
+        'fecha_nacimiento' => $user_decoded->fecha_nacimiento,
+        'direccion' => $user_decoded->direccion,
+        'telefono' => $user_decoded->telefono
+        );
 
     $result = $db->insert('clientes', $data);
     if ($result > -1) {

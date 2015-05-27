@@ -172,12 +172,16 @@
         }
 
 
-        function create(nombre, apellido, mail, password, callback){
+        function create(nombre, apellido, mail, password, fecha_nacimiento,
+            telefono, direccion, callback){
             var user = {
                 'nombre': nombre,
                 'apellido': apellido,
                 'mail': mail,
-                'password': password
+                'password': password,
+                'fecha_nacimiento': fecha_nacimiento,
+                'telefono': telefono,
+                'direccion': direccion
             };
             return $http.post(url,
                 {
