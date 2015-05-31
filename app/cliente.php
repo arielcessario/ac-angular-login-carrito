@@ -187,11 +187,12 @@ function changePassword($cliente_id, $pass_old, $pass_new){
     $db = new MysqliDb();
 
     $db->where('cliente_id', $cliente_id);
-//    $results = $db->get("clientes");
+    $results = $db->get("clientes");
 
     if($db->count > 0){
 
-        if (password_verify($pass_old, $pass_new)) {
+        $result = $results[0];
+        if (password_verify($pass_old, $result['password'])) {
 
 
             $options = ['cost' => 12];
