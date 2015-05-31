@@ -192,7 +192,12 @@ function changePassword($cliente_id, $pass_old, $pass_new){
     if($db->count > 0){
 
         if (password_verify($pass_old, $pass_new)) {
-            $data = array('password'=>$pass_new);
+
+
+            $options = ['cost' => 12];
+            $password = password_hash($pass_new, PASSWORD_BCRYPT, $options);
+
+            $data = array('password'=>$password);
             $db->update('clientes', $data);
             echo json_encode(1);
         }
