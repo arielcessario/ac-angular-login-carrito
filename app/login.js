@@ -128,6 +128,7 @@
         service.setLogged = setLogged;
         service.create = create;
         service.logout = logout;
+        service.changePassword = changePassword;
 
         return service;
 
