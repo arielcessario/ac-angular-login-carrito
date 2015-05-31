@@ -27,6 +27,8 @@ if ($decoded->function == 'login') {
     getClienteByEmailAndPassword($decoded->email, $decoded->password);
 } else if ($decoded->function == 'existeCliente') {
     existeCliente($decoded->username);
+} else if($decoded->function == 'changePassword'){
+    changePassword($decoded->cliente_id, $decoded->pass_old, $decoded->pass_new);
 }
 
 function login($mail, $password)
@@ -178,5 +180,27 @@ function existeCliente($username)
     }else{
         echo json_encode(false);
 
+    }
+}
+
+function changePassword($cliente_id, $pass_old, $pass_new){
+    $db = new MysqliDb();
+
+    $db->where('cliente_id', $cliente_id);
+//    $results = $db->get("clientes");
+
+    if($db->count > 0){
+
+        if (password_verify($pass_old, $pass_new)) {
+            $data = array('password'=>$pass_new);
+            $db->update('clientes', $data);
+            echo json_encode(1);
+        }
+        else {
+
+            echo json_encode(-1);
+        }
+    }else{
+        echo json_encode(-1);
     }
 }

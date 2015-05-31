@@ -204,6 +204,23 @@
                 return false;
             }
         }
+
+        function changePassword(cliente_id, pass_old, pass_new, callback){
+
+            return $http.post(url,
+                {
+                function: 'changePassword',
+                cliente_id : cliente_id,
+                pass_old: pass_old,
+                pass_new: pass_new
+            })
+                .success(function(data){
+                    callback(data);
+                })
+                .error(function(data){
+                    callback(data);
+                })
+        }
     }
 
 })();
