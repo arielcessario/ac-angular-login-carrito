@@ -12,26 +12,36 @@ require_once 'MyDBi.php';
 $data = file_get_contents("php://input");
 
 $decoded = json_decode($data);
+if($decoded != null) {
+    if ($decoded->function == 'login') {
+        login($decoded->mail, $decoded->password);
+    } else if ($decoded->function == 'checkLastLogin') {
+        checkLastLogin($decoded->userid);
+    } else if ($decoded->function == 'create') {
+        create($decoded->user);
+    } else if ($decoded->function == 'getClienteByEmail') {
+        getClienteByEmail($decoded->email);
+    } else if ($decoded->function == 'resetPassword') {
+        resetPassword($decoded->user, $decoded->new_password, $decoded->changepwd);
+    } else if ($decoded->function == 'getClienteByEmailAndPassword') {
+        getClienteByEmailAndPassword($decoded->email, $decoded->password);
+    } else if ($decoded->function == 'existeCliente') {
+        existeCliente($decoded->username);
+    } else if ($decoded->function == 'changePassword') {
+        changePassword($decoded->cliente_id, $decoded->pass_old, $decoded->pass_new);
+    } else if ($decoded->function == 'getHistoricoPedidos') {
+        getHistoricoPedidos($decoded->cliente_id);
+    }
 
-if ($decoded->function == 'login') {
-    login($decoded->mail, $decoded->password);
-} else if ($decoded->function == 'checkLastLogin') {
-    checkLastLogin($decoded->userid);
-} else if ($decoded->function == 'create') {
-    create($decoded->user);
-} else if ($decoded->function == 'getClienteByEmail') {
-    getClienteByEmail($decoded->email);
-} else if ($decoded->function == 'resetPassword') {
-    resetPassword($decoded->user, $decoded->new_password, $decoded->changepwd);
-} else if ($decoded->function == 'getClienteByEmailAndPassword') {
-    getClienteByEmailAndPassword($decoded->email, $decoded->password);
-} else if ($decoded->function == 'existeCliente') {
-    existeCliente($decoded->username);
-} else if ($decoded->function == 'changePassword') {
-    changePassword($decoded->cliente_id, $decoded->pass_old, $decoded->pass_new);
-} else if ($decoded->function == 'getHistoricoPedidos') {
-    getHistoricoPedidos($decoded->cliente_id);
+}else{
+
+    $function = $_GET["function"];
+    if ($function == 'getHistoricoPedidos') {
+        getHistoricoPedidos($_GET["cliente_id"]);
+    }
+
 }
+
 
 function login($mail, $password)
 {
