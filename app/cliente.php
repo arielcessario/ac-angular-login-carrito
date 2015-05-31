@@ -27,8 +27,10 @@ if ($decoded->function == 'login') {
     getClienteByEmailAndPassword($decoded->email, $decoded->password);
 } else if ($decoded->function == 'existeCliente') {
     existeCliente($decoded->username);
-} else if($decoded->function == 'changePassword'){
+} else if ($decoded->function == 'changePassword') {
     changePassword($decoded->cliente_id, $decoded->pass_old, $decoded->pass_new);
+} else if ($decoded->function == 'getHistoricoPedidos') {
+    getHistoricoPedidos($decoded->cliente_id);
 }
 
 function login($mail, $password)
@@ -38,17 +40,16 @@ function login($mail, $password)
 
     $results = $db->get("clientes");
 
-    if($db->count > 0){
+    if ($db->count > 0) {
 
         $hash = $results[0]['password'];
         if (password_verify($password, $hash)) {
             echo json_encode($results);
-        }
-        else {
+        } else {
 
             echo json_encode(-1);
         }
-    }else{
+    } else {
         echo json_encode(-1);
     }
 
@@ -63,8 +64,7 @@ function checkLastLogin($userid)
     if ($db->count < 1) {
         $db->rawQuery('update clientes set token ="" where cliente_id =' . $userid);
         echo(json_encode(false));
-    }
-    else {
+    } else {
         $diff = $results[0]["diferencia"];
 
         if (intval($diff) < 12960) {
@@ -92,7 +92,7 @@ function create($user)
         'fecha_nacimiento' => $user_decoded->fecha_nacimiento,
         'direccion' => $user_decoded->direccion,
         'telefono' => $user_decoded->telefono
-        );
+    );
 
     $result = $db->insert('clientes', $data);
     if ($result > -1) {
@@ -153,8 +153,7 @@ function getClienteByEmailAndPassword($email, $password)
 
     if (password_verify($password, $hash)) {
         $response = ['user' => json_encode($results[0]), 'result' => true, 'password' => $password, 'hash' => $hash, 'pwd_info' => password_get_info($hash)];
-    }
-    else {
+    } else {
         $response = ['user' => json_encode(null), 'result' => false, 'password' => $password, 'hash' => $hash, 'pwd_info' => password_get_info($hash)];
     }
     //retorno el resultado serializado
@@ -163,7 +162,7 @@ function getClienteByEmailAndPassword($email, $password)
 
 function existeCliente($username)
 {
-     //Instancio la conexion con la DB
+    //Instancio la conexion con la DB
     $db = new MysqliDb();
     //Armo el filtro por email
     $db->where("user_name", $username);
@@ -174,22 +173,23 @@ function existeCliente($username)
 //    $response = ['user' => json_encode($results[0])];
 
     //retorno el resultado serializado
-    if($db->count > 0){
+    if ($db->count > 0) {
 
         echo json_encode(true);
-    }else{
+    } else {
         echo json_encode(false);
 
     }
 }
 
-function changePassword($cliente_id, $pass_old, $pass_new){
+function changePassword($cliente_id, $pass_old, $pass_new)
+{
     $db = new MysqliDb();
 
     $db->where('cliente_id', $cliente_id);
     $results = $db->get("clientes");
 
-    if($db->count > 0){
+    if ($db->count > 0) {
 
         $result = $results[0];
         if (password_verify($pass_old, $result['password'])) {
@@ -198,15 +198,61 @@ function changePassword($cliente_id, $pass_old, $pass_new){
             $options = ['cost' => 12];
             $password = password_hash($pass_new, PASSWORD_BCRYPT, $options);
 
-            $data = array('password'=>$password);
+            $data = array('password' => $password);
             $db->update('clientes', $data);
             echo json_encode(1);
-        }
-        else {
+        } else {
 
             echo json_encode(-1);
         }
-    }else{
+    } else {
         echo json_encode(-1);
     }
+}
+
+function getHistoricoPedidos($cliente_id)
+{
+    $db = new MysqliDb();
+
+    $pedidos = array();
+
+    $SQL = "SELECT carritos.carrito_id,
+    carritos.status,
+    carritos.total,
+    carritos.fecha,
+    carritos.cliente_id,
+    0 detalles
+FROM carritos
+WHERE cliente_id = " . $cliente_id . " order by fecha desc;";
+
+    $results = $db->rawQuery($SQL);
+
+
+    foreach ($results as $row) {
+
+        $SQL = 'select
+carrito_detalle_id,
+p.producto_id,
+cantidad,
+precio,
+p.nombre
+from
+carrito_detalles cd
+inner join
+productos p
+on
+cd.producto_id = p.producto_id
+where
+carrito_id = ' . $row['carrito_id'] . ';';
+
+        $detalle = $db->rawQuery($SQL);
+
+        $row['detalles'] = $detalle;
+
+        array_push($pedidos, $row);
+
+
+    }
+
+    echo json_encode($pedidos);
 }

@@ -129,6 +129,7 @@
         service.create = create;
         service.logout = logout;
         service.changePassword = changePassword;
+        service.getHistoricoPedidos = getHistoricoPedidos;
 
         return service;
 
@@ -215,6 +216,20 @@
                 pass_old: pass_old,
                 pass_new: pass_new
             })
+                .success(function(data){
+                    callback(data);
+                })
+                .error(function(data){
+                    callback(data);
+                })
+        }
+
+        function getHistoricoPedidos(cliente_id, callback){
+            return $http.post(url,
+                {
+                    function: 'getHistoricoPedidos',
+                    cliente_id : cliente_id
+                })
                 .success(function(data){
                     callback(data);
                 })
