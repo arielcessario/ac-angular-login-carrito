@@ -132,10 +132,21 @@
         service.getHistoricoPedidos = getHistoricoPedidos;
         service.getClienteByEmail = getClienteByEmail;
         service.updateCliente = updateCliente;
+        service.existeCliente = existeCliente;
 
         return service;
 
         //Functions
+        function existeCliente(username, callback){
+            return $http.post(url,
+                {'function': 'existeCliente', 'username': username})
+                .success(function (data) {
+                    callback(data);
+                })
+                .error()
+        }
+
+
         function logout(){
             $cookieStore.remove('app.userlogged');
         }
