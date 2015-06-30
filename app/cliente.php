@@ -12,6 +12,7 @@ require_once 'MyDBi.php';
 $data = file_get_contents("php://input");
 
 $decoded = json_decode($data);
+
 if($decoded != null) {
     if ($decoded->function == 'login') {
         login($decoded->mail, $decoded->password);
@@ -31,15 +32,15 @@ if($decoded != null) {
         changePassword($decoded->cliente_id, $decoded->pass_old, $decoded->pass_new);
     } else if ($decoded->function == 'getHistoricoPedidos') {
         getHistoricoPedidos($decoded->cliente_id);
+    } else if ($decoded->function == 'update') {
+        update($decoded->user);
     }
-
-}else{
-
+}
+else{
     $function = $_GET["function"];
     if ($function == 'getHistoricoPedidos') {
         getHistoricoPedidos($_GET["cliente_id"]);
     }
-
 }
 
 
@@ -200,23 +201,43 @@ function changePassword($cliente_id, $pass_old, $pass_new)
     $results = $db->get("clientes");
 
     if ($db->count > 0) {
-
         $result = $results[0];
-        if (password_verify($pass_old, $result['password'])) {
 
+        if (password_verify($pass_old, $result['password'])) {
 
             $options = ['cost' => 12];
             $password = password_hash($pass_new, PASSWORD_BCRYPT, $options);
 
             $data = array('password' => $password);
-            $db->update('clientes', $data);
-            echo json_encode(1);
-        } else {
-
-            echo json_encode(-1);
+            if ($db->update('clientes', $data)) {
+                echo json_encode(1);
+            } else {
+                echo json_encode(-1);
+            }
         }
     } else {
         echo json_encode(-1);
+    }
+}
+
+function update($user)
+{
+    $db = new MysqliDb();
+    $user_decoded = json_decode($user);
+
+    $db->where('cliente_id', $user_decoded->cliente_id);
+
+    $data = array(
+        'nombre' => $user_decoded->nombre,
+        'apellido' => $user_decoded->apellido,
+        'mail' => $user_decoded->mail,
+        'direccion' => $user_decoded->direccion
+    );
+
+    if ($db->update('clientes', $data)) {
+        echo json_encode(['result' => true]);
+    } else {
+        echo json_encode(['result' => false]);
     }
 }
 
@@ -229,7 +250,7 @@ function getHistoricoPedidos($cliente_id)
     $SQL = "SELECT carritos.carrito_id,
     carritos.status,
     carritos.total,
-    carritos.fecha,
+    date(carritos.fecha) as fecha,
     carritos.cliente_id,
     0 detalles
 FROM carritos

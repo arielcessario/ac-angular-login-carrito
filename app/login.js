@@ -9,7 +9,7 @@
     var currentScriptPath = scripts[scripts.length-1].src;
 
     angular.module('login.login', ['ngRoute', 'ngCookies'])
-    //angular.module('login.login', ['ngRoute', 'ngCookies'])
+        //angular.module('login.login', ['ngRoute', 'ngCookies'])
         .config(['$routeProvider', function ($routeProvider) {
             $routeProvider.when('/login/:action', {
                 templateUrl: './login/login.html',
@@ -36,10 +36,10 @@
         var vm = this;
 
         // Variables
-	vm.username = '';
+        vm.username = '';
         vm.password = '';
         vm.changePwd = 0;
-        
+
         // Functions declaration
         vm.login = login;
         vm.createUser = createUser;
@@ -55,16 +55,16 @@
                 if(vm.password.trim().length >= 6 && vm.password.trim().length <= 25) {
                     LoginService.login(vm.username, vm.password, function (data){
                         //console.log(data);
-                        if(data.response) {                            
+                        if(data.response) {
                             var user = JSON.parse(data.user);
                             vm.changePwd = user.change_pwd;
                             if(user.change_pwd === 0) {
                                 //$window.location.href = destinationWebsite;
                                 LoginService.setLogged(user.user_name, user.usuario_id, user.rol_id, user.token);
-                            }                                
+                            }
                             else {
                                 //toastr.warning('Por favor cambie la contraseña temporal');
-                            }                        	
+                            }
                         }
                         else {
                             //toastr.error('Usuario o contraseña invalido');
@@ -130,10 +130,12 @@
         service.logout = logout;
         service.changePassword = changePassword;
         service.getHistoricoPedidos = getHistoricoPedidos;
+        service.getClienteByEmail = getClienteByEmail;
+        service.updateCliente = updateCliente;
 
         return service;
 
-         //Functions
+        //Functions
         function logout(){
             $cookieStore.remove('app.userlogged');
         }
@@ -146,7 +148,7 @@
                 .success(function (data) {
                     if (data[0].nombre !== undefined) {
                         setLogged(data);
-                    }                    
+                    }
                     //console.log(data);
                     callback(data);
                 })
@@ -175,7 +177,7 @@
 
 
         function create(nombre, apellido, mail, password, fecha_nacimiento,
-            telefono, direccion, callback){
+                        telefono, direccion, callback){
             var user = {
                 'nombre': nombre,
                 'apellido': apellido,
@@ -211,11 +213,11 @@
 
             return $http.post(url,
                 {
-                function: 'changePassword',
-                cliente_id : cliente_id,
-                pass_old: pass_old,
-                pass_new: pass_new
-            })
+                    function: 'changePassword',
+                    cliente_id : cliente_id,
+                    pass_old: pass_old,
+                    pass_new: pass_new
+                })
                 .success(function(data){
                     callback(data);
                 })
@@ -235,6 +237,41 @@
                 .error(function(data){
                     callback(data);
                 })
+        }
+
+        function getClienteByEmail(email, callback){
+            return $http.post(url,
+                {
+                    'function': 'getClienteByEmail',
+                    'email': email
+                })
+                .success(function (data) {
+                    callback(data);
+                })
+                .error(function(data){
+                    callback(data);
+                })
+        }
+
+        function updateCliente(cliente_id, nombre, apellido, mail, direccion, callback){
+            var user = {
+                'cliente_id': cliente_id,
+                'nombre': nombre,
+                'apellido': apellido,
+                'mail': mail,
+                'direccion': direccion
+            };
+            return $http.post(url,
+                {
+                    'function': 'update',
+                    'user': JSON.stringify(user)
+                })
+                .success(function(data){
+                    callback(data);
+                })
+                .error(function(data){
+                    callback(data);
+                });
         }
     }
 
