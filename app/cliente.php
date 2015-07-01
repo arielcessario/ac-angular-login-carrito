@@ -177,6 +177,7 @@ function existeCliente($username)
     $db = new MysqliDb();
     //Armo el filtro por email
     $db->where("mail", $username);
+
     //Que me retorne el cliente filtrando por email
     $results = $db->get("clientes");
 
