@@ -240,7 +240,7 @@
         function getHistoricoPedidos(cliente_id, callback){
             return $http.get(url+'?function=getHistoricoPedidos&cliente_id='+cliente_id,
                 {
-                    cache: true
+                    //cache: true
                 })
                 .success(function(data){
                     callback(data);
