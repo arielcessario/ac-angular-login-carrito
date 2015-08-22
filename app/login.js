@@ -163,7 +163,7 @@
                     //console.log(data);
                     callback(data);
                 })
-                .error()
+                .error(function(data){})
         }
 
         function checkLastLogin(userid, callback) {

@@ -253,41 +253,31 @@ function getHistoricoPedidos($cliente_id)
     $pedidos = array();
 
     $SQL = "SELECT carritos.carrito_id,
-    carritos.status,
-    carritos.total,
-    date(carritos.fecha) as fecha,
-    carritos.cliente_id,
-    0 detalles
-FROM carritos
-WHERE cliente_id = " . $cliente_id . " order by fecha desc;";
+            carritos.status,
+            carritos.total,
+            date(carritos.fecha) as fecha,
+            carritos.cliente_id,
+            0 detalles
+            FROM carritos
+            WHERE cliente_id = " . $cliente_id . " ORDER BY carritos.carrito_id DESC;";
 
     $results = $db->rawQuery($SQL);
 
-
     foreach ($results as $row) {
-
-        $SQL = 'select
-carrito_detalle_id,
-p.producto_id,
-cantidad,
-precio,
-p.nombre
-from
-carrito_detalles cd
-inner join
-productos p
-on
-cd.producto_id = p.producto_id
-where
-carrito_id = ' . $row['carrito_id'] . ';';
+        $SQL = 'SELECT
+                carrito_detalle_id,
+                p.producto_id,
+                cantidad,
+                precio,
+                p.nombre
+                FROM carrito_detalles cd
+                INNER JOIN productos p
+                ON cd.producto_id = p.producto_id
+                WHERE carrito_id = ' . $row['carrito_id'] . ';';
 
         $detalle = $db->rawQuery($SQL);
-
         $row['detalles'] = $detalle;
-
         array_push($pedidos, $row);
-
-
     }
 
     echo json_encode($pedidos);
