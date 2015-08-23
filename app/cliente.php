@@ -117,6 +117,11 @@ function create($user)
     }
 
 
+    if (array_key_exists('rol_id', $user_decoded)) {
+        $rol_id = $user_decoded->rol_id;
+    }else{
+        $rol_id = 0;
+    }
 
     if (array_key_exists('fecha_nacimiento', $user_decoded)) {
         $fecha_nacimiento = $user_decoded->fecha_nacimiento;
@@ -132,7 +137,8 @@ function create($user)
         'nro_doc' => $nro_doc,
         'fecha_nacimiento' => $fecha_nacimiento,
         'direccion' => $user_decoded->direccion,
-        'telefono' => $user_decoded->telefono
+        'telefono' => $user_decoded->telefono,
+        'rol_id' => $rol_id
     );
 
     $result = $db->insert('clientes', $data);
@@ -270,13 +276,20 @@ function update($user)
         $fecha_nacimiento = '';
     }
 
+    if (array_key_exists('rol_id', $user_decoded)) {
+        $rol_id = $user_decoded->rol_id;
+    }else{
+        $rol_id = 0;
+    }
+
     $data = array(
         'nombre' => $user_decoded->nombre,
         'apellido' => $user_decoded->apellido,
         'mail' => $user_decoded->mail,
         'nro_doc' => $nro_doc,
         'direccion' => $user_decoded->direccion,
-        'fecha_nacimiento' => $fecha_nacimiento
+        'fecha_nacimiento' => $fecha_nacimiento,
+        'rol_id' => $rol_id
     );
 
     if ($db->update('clientes', $data)) {
