@@ -214,15 +214,15 @@
 
 
         function create(cliente, callback) {
-            var user = {
-                'nombre': nombre,
-                'apellido': apellido,
-                'mail': mail,
-                'password': password,
-                'fecha_nacimiento': fecha_nacimiento,
-                'telefono': telefono,
-                'direccion': direccion
-            };
+            //var user = {
+            //    'nombre': nombre,
+            //    'apellido': apellido,
+            //    'mail': mail,
+            //    'password': password,
+            //    'fecha_nacimiento': fecha_nacimiento,
+            //    'telefono': telefono,
+            //    'direccion': direccion
+            //};
             return $http.post(url,
                 {
                     'function': 'create',
@@ -291,13 +291,13 @@
         }
 
         function updateCliente(cliente, callback) {
-            var user = {
-                'cliente_id': cliente_id,
-                'nombre': nombre,
-                'apellido': apellido,
-                'mail': mail,
-                'direccion': direccion
-            };
+            //var user = {
+            //    'cliente_id': cliente_id,
+            //    'nombre': nombre,
+            //    'apellido': apellido,
+            //    'mail': mail,
+            //    'direccion': direccion
+            //};
             return $http.post(url,
                 {
                     'function': 'update',
