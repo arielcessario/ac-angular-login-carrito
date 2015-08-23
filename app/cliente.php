@@ -117,13 +117,20 @@ function create($user)
     }
 
 
+
+    if (array_key_exists('fecha_nacimiento', $user_decoded)) {
+        $fecha_nacimiento = $user_decoded->fecha_nacimiento;
+    }else{
+        $fecha_nacimiento = '';
+    }
+
     $data = array(
         'nombre' => $user_decoded->nombre,
         'apellido' => $user_decoded->apellido,
         'mail' => $user_decoded->mail,
         'password' => $password,
         'nro_doc' => $nro_doc,
-        'fecha_nacimiento' => $user_decoded->fecha_nacimiento,
+        'fecha_nacimiento' => $fecha_nacimiento,
         'direccion' => $user_decoded->direccion,
         'telefono' => $user_decoded->telefono
     );
@@ -257,12 +264,19 @@ function update($user)
         $nro_doc = '';
     }
 
+    if (array_key_exists('fecha_nacimiento', $user_decoded)) {
+        $fecha_nacimiento = $user_decoded->fecha_nacimiento;
+    }else{
+        $fecha_nacimiento = '';
+    }
+
     $data = array(
         'nombre' => $user_decoded->nombre,
         'apellido' => $user_decoded->apellido,
         'mail' => $user_decoded->mail,
         'nro_doc' => $nro_doc,
-        'direccion' => $user_decoded->direccion
+        'direccion' => $user_decoded->direccion,
+        'fecha_nacimiento' => $fecha_nacimiento
     );
 
     if ($db->update('clientes', $data)) {
