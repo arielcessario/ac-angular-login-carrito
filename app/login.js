@@ -213,8 +213,7 @@
         }
 
 
-        function create(nombre, apellido, mail, password, fecha_nacimiento,
-                        telefono, direccion, callback) {
+        function create(cliente, callback) {
             var user = {
                 'nombre': nombre,
                 'apellido': apellido,
@@ -227,7 +226,7 @@
             return $http.post(url,
                 {
                     'function': 'create',
-                    'user': JSON.stringify(user)
+                    'user': JSON.stringify(cliente)
                 })
                 .success(function (data) {
                     callback(data);
@@ -291,7 +290,7 @@
                 })
         }
 
-        function updateCliente(cliente_id, nombre, apellido, mail, direccion, callback) {
+        function updateCliente(cliente, callback) {
             var user = {
                 'cliente_id': cliente_id,
                 'nombre': nombre,
@@ -302,7 +301,7 @@
             return $http.post(url,
                 {
                     'function': 'update',
-                    'user': JSON.stringify(user)
+                    'user': JSON.stringify(cliente)
                 })
                 .success(function (data) {
                     callback(data);
