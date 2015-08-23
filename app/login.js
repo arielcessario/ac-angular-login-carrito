@@ -6,7 +6,7 @@
     var destinationWebsite = "http://192.185.67.199/~arielces/admin-hostel/site/#/verify-login/";
 
     var scripts = document.getElementsByTagName("script");
-    var currentScriptPath = scripts[scripts.length-1].src;
+    var currentScriptPath = scripts[scripts.length - 1].src;
 
     angular.module('login.login', ['ngRoute', 'ngCookies'])
         //angular.module('login.login', ['ngRoute', 'ngCookies'])
@@ -51,14 +51,14 @@
 
         //Implementations
         function login() {
-            if(vm.username.trim().length > 0 && vm.password.trim().length > 0) {
-                if(vm.password.trim().length >= 6 && vm.password.trim().length <= 25) {
-                    LoginService.login(vm.username, vm.password, function (data){
+            if (vm.username.trim().length > 0 && vm.password.trim().length > 0) {
+                if (vm.password.trim().length >= 6 && vm.password.trim().length <= 25) {
+                    LoginService.login(vm.username, vm.password, function (data) {
                         //console.log(data);
-                        if(data.response) {
+                        if (data.response) {
                             var user = JSON.parse(data.user);
                             vm.changePwd = user.change_pwd;
-                            if(user.change_pwd === 0) {
+                            if (user.change_pwd === 0) {
                                 //$window.location.href = destinationWebsite;
                                 LoginService.setLogged(user.user_name, user.usuario_id, user.rol_id, user.token);
                             }
@@ -93,8 +93,8 @@
         }
 
         function checkLogged() {
-            if($routeParams !== undefined){
-                if($routeParams.action == 'clear'){
+            if ($routeParams !== undefined) {
+                if ($routeParams.action == 'clear') {
                     $cookieStore.remove('appname.login.userLogged');
                 }
             }
@@ -119,7 +119,7 @@
         //Variables
         var service = {};
 
-        var url= currentScriptPath.replace('login.js','cliente.php');
+        var url = currentScriptPath.replace('login.js', 'cliente.php');
 
         //Function declarations
         service.login = login;
@@ -130,6 +130,8 @@
         service.logout = logout;
         service.changePassword = changePassword;
         service.getHistoricoPedidos = getHistoricoPedidos;
+        service.getClientes = getClientes;
+        service.getClienteById = getClienteById;
         service.getClienteByEmail = getClienteByEmail;
         service.updateCliente = updateCliente;
         service.existeCliente = existeCliente;
@@ -137,7 +139,31 @@
         return service;
 
         //Functions
-        function existeCliente(username, callback){
+        function getClientes(callback) {
+            return $http.get(url + '?function=getClientes')
+                .success(function (data) {
+                    callback(data);
+                })
+                .error(function (data) {
+                    callback(data);
+                })
+        }
+
+        function getClienteById(id, callback) {
+            getClientes(function (data) {
+                var response = data.filter(function (elem, index, array) {
+
+                    return elem.cliente_id = id;
+
+                })[0];
+
+                callback(response);
+
+            });
+        }
+
+
+        function existeCliente(username, callback) {
             return $http.post(url,
                 {'function': 'existeCliente', 'username': username})
                 .success(function (data) {
@@ -147,10 +173,9 @@
         }
 
 
-        function logout(){
+        function logout() {
             $cookieStore.remove('app.userlogged');
         }
-
 
 
         function login(mail, password, callback) {
@@ -163,7 +188,8 @@
                     //console.log(data);
                     callback(data);
                 })
-                .error(function(data){})
+                .error(function (data) {
+                })
         }
 
         function checkLastLogin(userid, callback) {
@@ -171,7 +197,7 @@
                 {function: 'checkLastLogin', 'userid': userid})
                 .success(function (data) {
                     //console.log(data);
-                    if(data !=='false'){
+                    if (data !== 'false') {
 
                         callback(data);
                     }
@@ -188,7 +214,7 @@
 
 
         function create(nombre, apellido, mail, password, fecha_nacimiento,
-                        telefono, direccion, callback){
+                        telefono, direccion, callback) {
             var user = {
                 'nombre': nombre,
                 'apellido': apellido,
@@ -203,54 +229,55 @@
                     'function': 'create',
                     'user': JSON.stringify(user)
                 })
-                .success(function(data){
+                .success(function (data) {
                     callback(data);
                 })
-                .error(function(data){
+                .error(function (data) {
                     console.log(data);
                 });
         }
+
         function checkLogged() {
             var globals = $cookieStore.get('app.userlogged');
 
-            if(globals!== undefined && globals.cliente !== undefined){
+            if (globals !== undefined && globals.cliente !== undefined) {
                 return globals;
-            }else{
+            } else {
                 return false;
             }
         }
 
-        function changePassword(cliente_id, pass_old, pass_new, callback){
+        function changePassword(cliente_id, pass_old, pass_new, callback) {
 
             return $http.post(url,
                 {
                     function: 'changePassword',
-                    cliente_id : cliente_id,
+                    cliente_id: cliente_id,
                     pass_old: pass_old,
                     pass_new: pass_new
                 })
-                .success(function(data){
+                .success(function (data) {
                     callback(data);
                 })
-                .error(function(data){
+                .error(function (data) {
                     callback(data);
                 })
         }
 
-        function getHistoricoPedidos(cliente_id, callback){
-            return $http.get(url+'?function=getHistoricoPedidos&cliente_id='+cliente_id,
+        function getHistoricoPedidos(cliente_id, callback) {
+            return $http.get(url + '?function=getHistoricoPedidos&cliente_id=' + cliente_id,
                 {
                     //cache: true
                 })
-                .success(function(data){
+                .success(function (data) {
                     callback(data);
                 })
-                .error(function(data){
+                .error(function (data) {
                     callback(data);
                 })
         }
 
-        function getClienteByEmail(email, callback){
+        function getClienteByEmail(email, callback) {
             return $http.post(url,
                 {
                     'function': 'getClienteByEmail',
@@ -259,12 +286,12 @@
                 .success(function (data) {
                     callback(data);
                 })
-                .error(function(data){
+                .error(function (data) {
                     callback(data);
                 })
         }
 
-        function updateCliente(cliente_id, nombre, apellido, mail, direccion, callback){
+        function updateCliente(cliente_id, nombre, apellido, mail, direccion, callback) {
             var user = {
                 'cliente_id': cliente_id,
                 'nombre': nombre,
@@ -277,10 +304,10 @@
                     'function': 'update',
                     'user': JSON.stringify(user)
                 })
-                .success(function(data){
+                .success(function (data) {
                     callback(data);
                 })
-                .error(function(data){
+                .error(function (data) {
                     callback(data);
                 });
         }

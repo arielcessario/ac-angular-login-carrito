@@ -45,7 +45,16 @@ else{
     $function = $_GET["function"];
     if ($function == 'getHistoricoPedidos') {
         getHistoricoPedidos($_GET["cliente_id"]);
+    }elseif ($function == 'getClientes') {
+        getClientes();
     }
+}
+
+
+function getClientes(){
+    $db = new MysqliDb();
+    $results = $db->get('clientes');
+    echo json_encode($results);
 }
 
 
@@ -100,11 +109,20 @@ function create($user)
     $options = ['cost' => 12];
     $password = password_hash($user_decoded->password, PASSWORD_BCRYPT, $options);
 
+//    $nro_doc = '';
+    if (array_key_exists('nro_doc', $user_decoded)) {
+        $nro_doc = $user_decoded->nro_doc;
+    }else{
+        $nro_doc = '';
+    }
+
+
     $data = array(
         'nombre' => $user_decoded->nombre,
         'apellido' => $user_decoded->apellido,
         'mail' => $user_decoded->mail,
         'password' => $password,
+        'nro_doc' => $nro_doc,
         'fecha_nacimiento' => $user_decoded->fecha_nacimiento,
         'direccion' => $user_decoded->direccion,
         'telefono' => $user_decoded->telefono
@@ -233,10 +251,17 @@ function update($user)
 
     $db->where('cliente_id', $user_decoded->cliente_id);
 
+    if (array_key_exists('nro_doc', $user_decoded)) {
+        $nro_doc = $user_decoded->nro_doc;
+    }else{
+        $nro_doc = '';
+    }
+
     $data = array(
         'nombre' => $user_decoded->nombre,
         'apellido' => $user_decoded->apellido,
         'mail' => $user_decoded->mail,
+        'nro_doc' => $nro_doc,
         'direccion' => $user_decoded->direccion
     );
 
