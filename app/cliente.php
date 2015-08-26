@@ -244,7 +244,7 @@ function changePassword($cliente_id, $pass_old, $pass_new)
 
             $options = ['cost' => 12];
             $password = password_hash($pass_new, PASSWORD_BCRYPT, $options);
-
+            $db->where('cliente_id', $cliente_id);
             $data = array('password' => $password);
             if ($db->update('clientes', $data)) {
                 echo json_encode(1);
