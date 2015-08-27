@@ -42,7 +42,7 @@ $decoded_token = null;
 function checkSecurity()
 {
     $requestHeaders = apache_request_headers();
-    $authorizationHeader = $requestHeaders['AUTHORIZATION'];
+    $authorizationHeader = $requestHeaders['Authorization'];
 
     if ($authorizationHeader == null) {
         header('HTTP/1.0 401 Unauthorized');
@@ -51,11 +51,13 @@ function checkSecurity()
     }
 
     // // validate the token
-    $token = str_replace('Bearer ', '', $authorizationHeader);
+    $pre_token = str_replace('Bearer ', '', $authorizationHeader);
+    $token = str_replace('"', '', $pre_token);
     $secret = 'uiglp';
     global $decoded_token;
     try {
-        $decoded_token = JWT::decode($token, base64_decode(strtr($secret, '-_', '+/')));
+//        $decoded_token = JWT::decode($token, base64_decode(strtr($secret, '-_', '+/')),false);
+        $decoded_token = JWT::decode($token, 'uiglp');
     } catch (UnexpectedValueException $ex) {
         header('HTTP/1.0 401 Unauthorized');
         echo "Invalid token";
@@ -113,6 +115,7 @@ function createToken($id, $username)
     $notBefore = $issuedAt + 10;             //Adding 10 seconds
     $expire = $notBefore + 60;            // Adding 60 seconds
     $serverName = 'serverName'; // Retrieve the server name from config file
+    $aud = 'nombredelaempresa';
 //        $serverName = $config->get('serverName'); // Retrieve the server name from config file
 
     /*
@@ -124,6 +127,7 @@ function createToken($id, $username)
         'iss' => $serverName,       // Issuer
         'nbf' => $notBefore,        // Not before
         'exp' => $expire,           // Expire
+        'aud' => $aud,           // Expire
         'data' => [                  // Data related to the signer user
             'userId' => $id, // userid from the users table
             'userName' => $username, // User name
