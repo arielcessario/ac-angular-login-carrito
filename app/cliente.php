@@ -7,6 +7,7 @@
  */
 
 session_start();
+$jwt_enabled = false;
 if (file_exists('../../../MyDBi.php')) {
     require_once '../../../MyDBi.php';
 } else {
@@ -14,11 +15,65 @@ if (file_exists('../../../MyDBi.php')) {
 }
 
 
+if ($jwt_enabled) {
+    if (file_exists('../../../jwt_helper.php')) {
+        require_once '../../../jwt_helper.php';
+    } else {
+        require_once 'jwt_helper.php';
+    }
+}
+
+
 $data = file_get_contents("php://input");
 
 $decoded = json_decode($data);
+$token = '';
 
-if($decoded != null) {
+if ($jwt_enabled) {
+    if ($decoded != null && $decoded->function == 'login') {
+
+        $token = '';
+    } else {
+        checkSecurity();
+    }
+}
+$decoded_token = null;
+
+function checkSecurity()
+{
+    $requestHeaders = apache_request_headers();
+    $authorizationHeader = $requestHeaders['AUTHORIZATION'];
+
+    if ($authorizationHeader == null) {
+        header('HTTP/1.0 401 Unauthorized');
+        echo "No authorization header sent";
+        exit();
+    }
+
+    // // validate the token
+    $token = str_replace('Bearer ', '', $authorizationHeader);
+    $secret = 'uiglp';
+    global $decoded_token;
+    try {
+        $decoded_token = JWT::decode($token, base64_decode(strtr($secret, '-_', '+/')));
+    } catch (UnexpectedValueException $ex) {
+        header('HTTP/1.0 401 Unauthorized');
+        echo "Invalid token";
+        exit();
+    }
+
+
+    // // validate that this token was made for us
+    if ($decoded_token->aud != 'uiglp') {
+        header('HTTP/1.0 401 Unauthorized');
+        echo "Invalid token";
+        exit();
+    }
+
+}
+
+
+if ($decoded != null) {
     if ($decoded->function == 'login') {
         login($decoded->mail, $decoded->password);
     } else if ($decoded->function == 'checkLastLogin') {
@@ -40,18 +95,50 @@ if($decoded != null) {
     } else if ($decoded->function == 'update') {
         update($decoded->user);
     }
-}
-else{
+} else {
     $function = $_GET["function"];
     if ($function == 'getHistoricoPedidos') {
         getHistoricoPedidos($_GET["cliente_id"]);
-    }elseif ($function == 'getClientes') {
+    } elseif ($function == 'getClientes') {
         getClientes();
     }
 }
 
 
-function getClientes(){
+function createToken($id, $username)
+{
+
+    $tokenId = base64_encode(mcrypt_create_iv(32));
+    $issuedAt = time();
+    $notBefore = $issuedAt + 10;             //Adding 10 seconds
+    $expire = $notBefore + 60;            // Adding 60 seconds
+    $serverName = 'serverName'; // Retrieve the server name from config file
+//        $serverName = $config->get('serverName'); // Retrieve the server name from config file
+
+    /*
+     * Create the token as an array
+     */
+    $data = [
+        'iat' => $issuedAt,         // Issued at: time when the token was generated
+        'jti' => $tokenId,          // Json Token Id: an unique identifier for the token
+        'iss' => $serverName,       // Issuer
+        'nbf' => $notBefore,        // Not before
+        'exp' => $expire,           // Expire
+        'data' => [                  // Data related to the signer user
+            'userId' => $id, // userid from the users table
+            'userName' => $username, // User name
+        ]
+    ];
+
+    return $data;
+    /*
+     * More code here...
+     */
+}
+
+
+function getClientes()
+{
     $db = new MysqliDb();
     $results = $db->get('clientes');
     echo json_encode($results);
@@ -65,11 +152,18 @@ function login($mail, $password)
 
     $results = $db->get("clientes");
 
+    global $jwt_enabled;
+
     if ($db->count > 0) {
 
         $hash = $results[0]['password'];
         if (password_verify($password, $hash)) {
-            echo json_encode($results);
+
+            if ($jwt_enabled) {
+                echo json_encode(createToken($results['cliente_id'], $mail));
+            } else {
+                echo json_encode($results);
+            }
         } else {
 
             echo json_encode(-1);
@@ -112,20 +206,20 @@ function create($user)
 //    $nro_doc = '';
     if (array_key_exists('nro_doc', $user_decoded)) {
         $nro_doc = $user_decoded->nro_doc;
-    }else{
+    } else {
         $nro_doc = '';
     }
 
 
     if (array_key_exists('rol_id', $user_decoded)) {
         $rol_id = $user_decoded->rol_id;
-    }else{
+    } else {
         $rol_id = 0;
     }
 
     if (array_key_exists('fecha_nacimiento', $user_decoded)) {
         $fecha_nacimiento = $user_decoded->fecha_nacimiento;
-    }else{
+    } else {
         $fecha_nacimiento = '';
     }
 
@@ -267,19 +361,19 @@ function update($user)
 
     if (array_key_exists('nro_doc', $user_decoded)) {
         $nro_doc = $user_decoded->nro_doc;
-    }else{
+    } else {
         $nro_doc = '';
     }
 
     if (array_key_exists('fecha_nacimiento', $user_decoded)) {
         $fecha_nacimiento = $user_decoded->fecha_nacimiento;
-    }else{
+    } else {
         $fecha_nacimiento = '';
     }
 
     if (array_key_exists('rol_id', $user_decoded)) {
         $rol_id = $user_decoded->rol_id;
-    }else{
+    } else {
         $rol_id = 0;
     }
 
