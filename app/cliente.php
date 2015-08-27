@@ -214,7 +214,7 @@ function create($user)
     if (array_key_exists('tipo_doc', $user_decoded)) {
         $tipo_doc = $user_decoded->tipo_doc;
     } else {
-        $tipo_doc = '';
+        $tipo_doc = 0;
     }
 
     if (array_key_exists('rol_id', $user_decoded)) {
@@ -382,7 +382,7 @@ function update($user)
     if (array_key_exists('tipo_doc', $user_decoded)) {
         $tipo_doc = $user_decoded->tipo_doc;
     } else {
-        $tipo_doc = '';
+        $tipo_doc = 0;
     }
 
     if (array_key_exists('fecha_nacimiento', $user_decoded)) {
