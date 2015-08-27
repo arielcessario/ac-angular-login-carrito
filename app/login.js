@@ -122,6 +122,7 @@
         var service = {};
 
         var url = currentScriptPath.replace('login.js', 'cliente.php');
+		var url_mail = currentScriptPath.replace('login.js', 'send-pwd.php');
 
         //Function declarations
         service.login = login;
@@ -137,6 +138,9 @@
         service.getClienteByEmail = getClienteByEmail;
         service.updateCliente = updateCliente;
         service.existeCliente = existeCliente;
+		service.sendPassword = sendPassword;
+        service.generateRandomPassword = generateRandomPassword;
+        service.resetPassword = resetPassword;
 
         return service;
 
@@ -312,6 +316,52 @@
                 .error(function (data) {
                     callback(data);
                 });
+        }
+		
+		function resetPassword(cliente_id, new_password, callback) {
+            return $http.post(url,
+                {
+                    'function': 'resetPassword',
+                    'cliente_id': cliente_id,
+                    'new_password': new_password
+                })
+                .success(function (data) {
+                    if (data) {
+                        callback(data);
+                    }
+                })
+                .error(function (data) {
+                    callback(data);
+                });
+        }
+
+        function sendPassword(email, new_password, callback) {
+            var mensaje = "Recibes este correo porque solicitaste recuperar tu contraseña.\n" +
+                "Te enviamos a continuación la siguiente contraseña.\n\n" +
+                "Nueva Contraseña: " + new_password + "\n\n" +
+                "Puedes cambiar la misma en la opción Mi Cuenta \n\n" +
+                "Saludos \n\n" +
+                "Bayres No Problem";
+
+            return $http.post(url_mail,
+                {
+                    function: 'sendMail',
+                    'email': email,
+                    'mensaje': mensaje
+                })
+                .success(function (data) {
+                    //console.log(data);
+                    callback(data);
+                })
+                .error(function (data) {
+                    callback(data);
+                });
+        }
+
+        function generateRandomPassword() {
+            return Math.random()            // Generate random number, eg: 0.123456
+                .toString(36)       // Convert  to base-36 : "0.4fzyo82mvyr"
+                .slice(-8);         // Cut off last 8 characters : "yo82mvyr"
         }
     }
 

@@ -83,7 +83,7 @@ if ($decoded != null) {
     } else if ($decoded->function == 'getClienteByEmail') {
         getClienteByEmail($decoded->email);
     } else if ($decoded->function == 'resetPassword') {
-        resetPassword($decoded->user, $decoded->new_password, $decoded->changepwd);
+        resetPassword($decoded->cliente_id, $decoded->new_password);
     } else if ($decoded->function == 'getClienteByEmailAndPassword') {
         getClienteByEmailAndPassword($decoded->email, $decoded->password);
     } else if ($decoded->function == 'existeCliente') {
@@ -266,32 +266,28 @@ function getClienteByEmail($email)
     //Instancio la conexion con la DB
     $db = new MysqliDb();
     //Armo el filtro por email
-    $db->where("email", $email);
+    $db->where("mail", $email);
     //Que me retorne el cliente filtrando por email
     $results = $db->get("clientes");
-
     //Serializo el resultado
-    $response = ['user' => json_encode($results[0])];
-
+    $response = ['cliente' => json_encode($results[0]), 'cliente_id' => $results[0]['cliente_id']];
     //retorno el resultado serializado
     echo json_encode($response);
 }
 
-function resetPassword($user, $new_password, $changepwd)
+function resetPassword($cliente_id, $new_password)
 {
     $db = new MysqliDb();
-    $user_decoded = json_decode($user);
     $options = ['cost' => 12];
     $password = password_hash($new_password, PASSWORD_BCRYPT, $options);
 
-    $data = array('password' => $password,
-        'changepwd' => $changepwd);
+    $data = array('password' => $password);
 
-    $db->where('cliente_id', $user_decoded->cliente_id);
+    $db->where('cliente_id', $cliente_id);
     if ($db->update('clientes', $data)) {
-        echo json_encode(['result' => true, 'new_password' => $new_password, 'password_hashed' => $password, 'pwd_info' => password_get_info($password)]);
+        echo json_encode(['result' => true, 'new_password' => $new_password, 'password_hashed' => $password]);
     } else {
-        echo json_encode(['result' => false, 'new_password' => $new_password, 'password_hashed' => $password, 'pwd_info' => password_get_info($password)]);
+        echo json_encode(['result' => false, 'new_password' => $new_password, 'password_hashed' => $password]);
     }
 }
 
@@ -300,7 +296,7 @@ function getClienteByEmailAndPassword($email, $password)
     //Instancio la conexion con la DB
     $db = new MysqliDb();
     //Armo el filtro por email
-    $db->where("email", $email);
+    $db->where("mail", $email);
     //Que me retorne el cliente filtrando por email
     $results = $db->get("clientes");
 
