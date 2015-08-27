@@ -211,6 +211,12 @@ function create($user)
     }
 
 
+    if (array_key_exists('tipo_doc', $user_decoded)) {
+        $tipo_doc = $user_decoded->tipo_doc;
+    } else {
+        $tipo_doc = '';
+    }
+
     if (array_key_exists('rol_id', $user_decoded)) {
         $rol_id = $user_decoded->rol_id;
     } else {
@@ -234,6 +240,7 @@ function create($user)
         'apellido' => $user_decoded->apellido,
         'mail' => $user_decoded->mail,
         'password' => $password,
+        'tipo_doc' => $tipo_doc,
         'nro_doc' => $nro_doc,
         'fecha_nacimiento' => $fecha_nacimiento,
         'direccion' => $user_decoded->direccion,
@@ -371,6 +378,13 @@ function update($user)
         $nro_doc = '';
     }
 
+
+    if (array_key_exists('tipo_doc', $user_decoded)) {
+        $tipo_doc = $user_decoded->tipo_doc;
+    } else {
+        $tipo_doc = '';
+    }
+
     if (array_key_exists('fecha_nacimiento', $user_decoded)) {
         $fecha_nacimiento = $user_decoded->fecha_nacimiento;
     } else {
@@ -393,6 +407,7 @@ function update($user)
         'nombre' => $user_decoded->nombre,
         'apellido' => $user_decoded->apellido,
         'mail' => $user_decoded->mail,
+        'tipo_doc' => $tipo_doc,
         'nro_doc' => $nro_doc,
         'direccion' => $user_decoded->direccion,
         'fecha_nacimiento' => $fecha_nacimiento,
