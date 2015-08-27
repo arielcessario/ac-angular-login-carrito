@@ -30,7 +30,7 @@ $decoded = json_decode($data);
 //$token = '';
 
 if ($jwt_enabled) {
-    if ($decoded != null && $decoded->function == 'login') {
+    if ($decoded != null && ($decoded->function == 'login' || $decoded->function == 'create')) {
 
         $token = '';
     } else {
@@ -130,7 +130,7 @@ function createToken($id, $username)
         ]
     ];
 
-    return $data;
+    return JWT::encode($data, 'uiglp');
     /*
      * More code here...
      */
@@ -160,7 +160,7 @@ function login($mail, $password)
         if (password_verify($password, $hash)) {
 
             if ($jwt_enabled) {
-                echo json_encode(createToken($results['cliente_id'], $mail));
+                echo json_encode(createToken($results[0]['cliente_id'], $mail));
             } else {
                 echo json_encode($results);
             }
