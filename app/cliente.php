@@ -138,7 +138,8 @@ function create($user)
         'fecha_nacimiento' => $fecha_nacimiento,
         'direccion' => $user_decoded->direccion,
         'telefono' => $user_decoded->telefono,
-        'rol_id' => $rol_id
+        'rol_id' => $rol_id,
+        'news_letter' => $user_decoded->news_letter
     );
 
     $result = $db->insert('clientes', $data);
@@ -289,7 +290,8 @@ function update($user)
         'nro_doc' => $nro_doc,
         'direccion' => $user_decoded->direccion,
         'fecha_nacimiento' => $fecha_nacimiento,
-        'rol_id' => $rol_id
+        'rol_id' => $rol_id,
+        'news_letter' => $user_decoded->news_letter
     );
 
     if ($db->update('clientes', $data)) {
