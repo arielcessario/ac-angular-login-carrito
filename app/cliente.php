@@ -223,6 +223,12 @@ function create($user)
         $fecha_nacimiento = '';
     }
 
+    if (array_key_exists('news_letter', $user_decoded)) {
+        $news_letter = $user_decoded->news_letter;
+    } else {
+        $news_letter = 0;
+    }
+
     $data = array(
         'nombre' => $user_decoded->nombre,
         'apellido' => $user_decoded->apellido,
@@ -233,7 +239,7 @@ function create($user)
         'direccion' => $user_decoded->direccion,
         'telefono' => $user_decoded->telefono,
         'rol_id' => $rol_id,
-        'news_letter' => $user_decoded->news_letter
+        'news_letter' => $news_letter
     );
 
     $result = $db->insert('clientes', $data);
@@ -377,6 +383,12 @@ function update($user)
         $rol_id = 0;
     }
 
+    if (array_key_exists('news_letter', $user_decoded)) {
+        $news_letter = $user_decoded->news_letter;
+    } else {
+        $news_letter = 0;
+    }
+
     $data = array(
         'nombre' => $user_decoded->nombre,
         'apellido' => $user_decoded->apellido,
@@ -385,7 +397,7 @@ function update($user)
         'direccion' => $user_decoded->direccion,
         'fecha_nacimiento' => $fecha_nacimiento,
         'rol_id' => $rol_id,
-        'news_letter' => $user_decoded->news_letter
+        'news_letter' => $news_letter
     );
 
     if ($db->update('clientes', $data)) {
