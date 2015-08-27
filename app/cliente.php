@@ -27,7 +27,7 @@ if ($jwt_enabled) {
 $data = file_get_contents("php://input");
 
 $decoded = json_decode($data);
-$token = '';
+//$token = '';
 
 if ($jwt_enabled) {
     if ($decoded != null && $decoded->function == 'login') {

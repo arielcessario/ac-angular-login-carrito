@@ -21,12 +21,14 @@
             });
         }])
         .controller('LoginCtrl', LoginCtrl)
-        .factory('LoginService', LoginService);
+        .factory('LoginService', LoginService)
+        .service('LoginState', LoginState);
 
     //Injects
     LoginCtrl.$inject = ['LoginService', '$cookieStore', '$window', '$routeParams', '$location'];
     //LoginCtrl.$inject = ['LoginService', '$cookieStore', '$window', '$routeParams'];
     LoginService.$inject = ['$http', '$cookieStore', '$window'];
+
 
 
     //Implementations
@@ -311,6 +313,12 @@
                     callback(data);
                 });
         }
+    }
+
+
+    LoginState.$inject = [];
+    function LoginState(){
+        this.isLogged = false;
     }
 
 })();
