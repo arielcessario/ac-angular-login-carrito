@@ -435,7 +435,7 @@ function getHistoricoPedidos($cliente_id)
             carritos.cliente_id,
             0 detalles
             FROM carritos
-            WHERE cliente_id = " . $cliente_id . " ORDER BY carritos.carrito_id DESC;";
+            WHERE cliente_id = " . $cliente_id . " AND status IN (2,3) ORDER BY carritos.carrito_id DESC;";
 
     $results = $db->rawQuery($SQL);
 
