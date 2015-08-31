@@ -107,7 +107,7 @@ if ($decoded != null) {
 }
 
 
-function createToken($id, $username)
+function createToken($id, $username, $rol)
 {
 
     $tokenId = base64_encode(mcrypt_create_iv(32));
@@ -131,6 +131,7 @@ function createToken($id, $username)
         'data' => [                  // Data related to the signer user
             'userId' => $id, // userid from the users table
             'userName' => $username, // User name
+            'rol' => $rol // Rol
         ]
     ];
 
@@ -164,7 +165,7 @@ function login($mail, $password)
         if (password_verify($password, $hash)) {
 
             if ($jwt_enabled) {
-                echo json_encode(createToken($results[0]['cliente_id'], $mail));
+                echo json_encode(createToken($results[0]['cliente_id'], $mail, $results[0]['rol_id']));
             } else {
                 echo json_encode($results);
             }
