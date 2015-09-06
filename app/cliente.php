@@ -274,10 +274,13 @@ function getClienteByEmail($email)
     $db->where("mail", $email);
     //Que me retorne el cliente filtrando por email
     $results = $db->get("clientes");
-    //Serializo el resultado
-    $response = ['cliente' => json_encode($results[0]), 'cliente_id' => $results[0]['cliente_id']];
-    //retorno el resultado serializado
-    echo json_encode($response);
+
+    if ($db->count > 0) {
+        echo json_encode(['result' => true, 'cliente_id' => $results[0]['cliente_id']]);
+    }
+    else {
+        echo json_encode(['result' => false]);
+    }
 }
 
 function resetPassword($cliente_id, $new_password)
